@@ -10,12 +10,12 @@ def update_prayer_times(prayer_labels, error_label):
     prayer_times = fetch_prayer_times()
     if prayer_times:
         for prayer, time in prayer_times.items():
-            prayer_labels[prayer].config(text=f"{prayer}: {time}")
+            prayer_labels[prayer].config(text=time)
         error_label.config(text="✅ تم تحديث المواقيت بنجاح!", fg="green")
     else:
         error_label.config(text="⚠️ تعذر جلب مواقيت الصلاة.", fg="red")
 
-# ✅ **عرض شاشة مواقيت الصلاة**
+# ✅ **عرض شاشة مواقيت الصلاة بتنسيق جدول مشابه للصورة**
 def show_prayer_times_screen(root, show_screen):
     """
     Creates and displays the prayer times screen.
@@ -40,15 +40,43 @@ def show_prayer_times_screen(root, show_screen):
 
     # إطار عرض المواقيت
     frame = tk.Frame(prayer_screen, bg="white", bd=2, relief="ridge")
-    frame.pack(pady=20, padx=20, fill="both", expand=True)
+    frame.pack(pady=20, padx=20)
 
-    # إنشاء القيم الافتراضية لعرض المواقيت
-    prayer_labels = {}
-    prayers = ["الصبح", "الظهر", "العصر", "المغرب", "العشاء"]
+    # 🔹 **تهيئة العناوين العلوية**
+    tk.Label(frame, text="(التوقيت)", font=("Arial", 14, "bold"), bg="white").grid(row=0, column=0, columnspan=6, pady=5)
+    tk.Label(frame, text="التاريخ الهجري: ....", font=("Arial", 12, "bold"), bg="white").grid(row=1, column=1, columnspan=2)
+    tk.Label(frame, text="التاريخ الميلادي: ....", font=("Arial", 12, "bold"), bg="white").grid(row=1, column=3, columnspan=2)
 
-    for prayer in prayers:
-        prayer_labels[prayer] = tk.Label(frame, text=f"{prayer}: --:--", font=("Arial", 18), bg="white")
-        prayer_labels[prayer].pack(pady=5)
+    # 🔹 **تهيئة عناوين أوقات الصلاة**
+    tk.Label(frame, text="الجمعة: ....", font=("Arial", 12, "bold"), bg="white").grid(row=2, column=0)
+    tk.Label(frame, text="الصبح", font=("Arial", 12, "bold"), bg="white").grid(row=2, column=1)
+    tk.Label(frame, text="الظهر", font=("Arial", 12, "bold"), bg="white").grid(row=2, column=2)
+    tk.Label(frame, text="العصر", font=("Arial", 12, "bold"), bg="white").grid(row=2, column=3)
+    tk.Label(frame, text="المغرب", font=("Arial", 12, "bold"), bg="white").grid(row=2, column=4)
+    tk.Label(frame, text="العشاء", font=("Arial", 12, "bold"), bg="white").grid(row=2, column=5)
+
+    # 🔹 **تهيئة صف الأذان**
+    tk.Label(frame, text="الأذان", font=("Arial", 12, "bold"), bg="white").grid(row=3, column=0)
+
+    # متغيرات تخزين أوقات الصلاة
+    prayer_labels = {
+        "الصبح": tk.Label(frame, text="--:--", font=("Arial", 12), bg="white"),
+        "الظهر": tk.Label(frame, text="--:--", font=("Arial", 12), bg="white"),
+        "العصر": tk.Label(frame, text="--:--", font=("Arial", 12), bg="white"),
+        "المغرب": tk.Label(frame, text="--:--", font=("Arial", 12), bg="white"),
+        "العشاء": tk.Label(frame, text="--:--", font=("Arial", 12), bg="white"),
+    }
+
+    # وضع الأوقات داخل الجدول
+    col_index = 1
+    for prayer, label in prayer_labels.items():
+        label.grid(row=3, column=col_index)
+        col_index += 1
+
+    # 🔹 **تهيئة صف الإقامة**
+    tk.Label(frame, text="الإقامة", font=("Arial", 12, "bold"), bg="white").grid(row=4, column=0)
+    
+    # (يمكنك إضافة قيم الإقامة هنا إذا لزم الأمر)
 
     # رسالة الخطأ
     error_label = tk.Label(prayer_screen, text="", font=("Arial", 14), fg="red", bg="#f8f9fa")
